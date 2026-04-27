@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OwnerDash - Smart Business POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-link.active { background-color: #2563eb; color: white; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        body.dark { background-color: #0f172a; color: #f8fafc; }
+        .dark .bg-card { background-color: #1e293b; border-color: #334155; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300">
+
+    <div id="app" class="flex flex-col md:flex-row h-screen overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col z-20">
+            <div class="p-6 flex items-center space-x-3">
+                <div class="p-2 bg-blue-600 rounded-lg text-white">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight">OwnerDash</span>
+            </div>
+            
+            <nav class="flex-grow px-4 space-y-1 overflow-y-auto no-scrollbar">
+                <button onclick="switchView('dashboard')" id="nav-dashboard" class="sidebar-link active w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="layout-grid"></i> <span>Dashboard</span>
+                </button>
+                <button onclick="switchView('pos')" id="nav-pos" class="sidebar-link w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="shopping-bag"></i> <span>Input Transaksi</span>
+                </button>
+                <button onclick="switchView('expenses')" id="nav-expenses" class="sidebar-link w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="wallet"></i> <span>Pengeluaran</span>
+                </button>
+                <button onclick="switchView('products')" id="nav-products" class="sidebar-link w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="box"></i> <span>Produk</span>
+                </button>
+                <button onclick="switchView('reports')" id="nav-reports" class="sidebar-link w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="file-text"></i> <span>Laporan</span>
+                </button>
+                <button onclick="switchView('piutang')" id="nav-piutang" class="sidebar-link w-full flex items-center space-x-3 p-3 rounded-xl transition">
+                    <i data-lucide="users"></i> <span>Piutang</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 space-y-2">
+                <button onclick="toggleDarkMode()" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <span class="text-sm">Mode Gelap</span>
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                </button>
+                <button onclick="switchView('sync')" class="w-full flex items-center space-x-3 p-3 rounded-xl bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 transition">
+                    <i data-lucide="refresh-cw" id="sync-icon"></i> <span class="text-sm font-semibold">Sync Data</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow overflow-y-auto bg-slate-50 dark:bg-slate-900 p-4 md:p-8 no-scrollbar">
+            
+            <!-- HEADER -->
+            <header class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                <div>
+                    <h1 id="page-title" class="text-2xl font-bold">Dashboard</h1>
+                    <p id="page-subtitle" class="text-slate-500 dark:text-slate-400">Selamat datang kembali, Owner.</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="status-badge" class="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full text-xs font-bold">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span id="status-text">ONLINE</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- VIEWS -->
+            <div id="view-container">
+                
+                <!-- VIEW: DASHBOARD -->
+                <section id="view-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-slate-500 text-sm font-semibold">Omset Hari Ini</p>
+                            <h2 id="stat-today-revenue" class="text-2xl font-bold mt-1 text-blue-600">Rp 0</h2>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-slate-500 text-sm font-semibold">Pengeluaran Hari Ini</p>
+                            <h2 id="stat-today-expense" class="text-2xl font-bold mt-1 text-red-500">Rp 0</h2>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-slate-500 text-sm font-semibold">Laba Bersih Hari Ini</p>
+                            <h2 id="stat-today-profit" class="text-2xl font-bold mt-1 text-emerald-600">Rp 0</h2>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <p class="text-slate-500 text-sm font-semibold">Omset Bulan Ini</p>
+                            <h2 id="stat-month-revenue" class="text-2xl font-bold mt-1">Rp 0</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold mb-4">Tren Penjualan (7 Hari Terakhir)</h3>
+                            <canvas id="salesChart" height="150"></canvas>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                            <h3 class="font-bold mb-4">Metode Pembayaran</h3>
+                            <canvas id="paymentChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: POS -->
+                <section id="view-pos" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="pos-search" oninput="renderPOSProducts()" placeholder="Cari nama produk..." class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <!-- JS Render -->
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl flex flex-col h-[calc(100vh-200px)] border border-slate-100 dark:border-slate-700">
+                        <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                            <h3 class="font-bold text-lg">Keranjang</h3>
+                            <button onclick="clearCart()" class="text-red-500 text-sm font-bold">Kosongkan</button>
+                        </div>
+                        <div id="cart-list" class="flex-grow overflow-y-auto p-4 space-y-3 no-scrollbar">
+                            <!-- JS Render -->
+                        </div>
+                        <div class="p-6 bg-slate-50 dark:bg-slate-700/50 space-y-4 rounded-b-3xl">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500">Metode Pembayaran</label>
+                                <select id="pos-payment" onchange="toggleCustomerInput()" class="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-none outline-none shadow-sm">
+                                    <option value="Tunai">Tunai</option>
+                                    <option value="Non-Tunai">Non-Tunai (QRIS/Transfer)</option>
+                                    <option value="Hutang">Hutang (Piutang)</option>
+                                </select>
+                            </div>
+                            <div id="customer-input-area" class="hidden space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500">Nama Pelanggan</label>
+                                <input type="text" id="pos-customer" placeholder="Nama Pelanggan..." class="w-full p-3 rounded-xl bg-white dark:bg-slate-800 border-none outline-none shadow-sm">
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="font-bold text-slate-500">Total</span>
+                                <span id="cart-total" class="text-2xl font-bold text-blue-600">Rp 0</span>
+                            </div>
+                            <button onclick="processCheckout()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg transition active:scale-95">
+                                SIMPAN TRANSAKSI
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: EXPENSES -->
+                <section id="view-expenses" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm h-fit">
+                            <h3 class="font-bold text-lg mb-4">Input Pengeluaran</h3>
+                            <form id="expense-form" class="space-y-4">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 uppercase">Kategori</label>
+                                    <select id="exp-category" required class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="Bahan Baku">Bahan Baku</option>
+                                        <option value="Gaji Karyawan">Gaji Karyawan</option>
+                                        <option value="Listrik & Air">Listrik & Air</option>
+                                        <option value="Wifi & Pulsa">Wifi & Pulsa</option>
+                                        <option value="Sewa Tempat">Sewa Tempat</option>
+                                        <option value="Lain-lain">Lain-lain</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 uppercase">Keterangan</label>
+                                    <input type="text" id="exp-note" placeholder="Contoh: Belanja plastik..." class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 uppercase">Jumlah (Rp)</label>
+                                    <input type="number" id="exp-amount" required placeholder="0" class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <button type="submit" class="w-full py-4 bg-red-500 text-white rounded-2xl font-bold shadow-lg hover:bg-red-600 transition active:scale-95">Simpan Pengeluaran</button>
+                            </form>
+                        </div>
+                        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+                            <div class="p-6 border-b border-slate-100 dark:border-slate-700">
+                                <h3 class="font-bold text-lg">Riwayat Pengeluaran</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs font-bold uppercase">
+                                        <tr>
+                                            <th class="px-6 py-4">Tanggal</th>
+                                            <th class="px-6 py-4">Kategori</th>
+                                            <th class="px-6 py-4">Keterangan</th>
+                                            <th class="px-6 py-4 text-right">Jumlah</th>
+                                            <th class="px-6 py-4 text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expense-table" class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                        <!-- JS Render -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: PRODUCTS -->
+                <section id="view-products" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg">Master Produk</h3>
+                        <button onclick="openProductModal()" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold flex items-center space-x-2 shadow-lg">
+                            <i data-lucide="plus" class="w-4 h-4"></i> <span>Produk Baru</span>
+                        </button>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="px-6 py-4">Nama Produk</th>
+                                        <th class="px-6 py-4">Kategori</th>
+                                        <th class="px-6 py-4 text-right">Harga / Varian</th>
+                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="product-table" class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                    <!-- JS Render -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: REPORTS -->
+                <section id="view-reports" class="hidden space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <input type="date" id="filter-date" class="p-2 rounded-lg border-none shadow-sm dark:bg-slate-800">
+                            <select id="filter-payment" class="p-2 rounded-lg border-none shadow-sm dark:bg-slate-800">
+                                <option value="">Semua Pembayaran</option>
+                                <option value="Tunai">Tunai</option>
+                                <option value="Non-Tunai">Non-Tunai</option>
+                                <option value="Hutang">Hutang</option>
+                            </select>
+                            <button onclick="applyFilters()" class="bg-slate-200 dark:bg-slate-700 px-4 py-2 rounded-lg font-bold">Filter</button>
+                        </div>
+                        <button onclick="exportToCSV()" class="bg-green-600 text-white px-6 py-2 rounded-xl font-bold flex items-center space-x-2 shadow-lg">
+                            <i data-lucide="download" class="w-4 h-4"></i> <span>Export Excel</span>
+                        </button>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-50 dark:bg-slate-700 text-slate-500 text-xs font-bold uppercase">
+                                    <tr>
+                                        <th class="px-6 py-4">Tanggal</th>
+                                        <th class="px-6 py-4">ID Transaksi</th>
+                                        <th class="px-6 py-4">Pelanggan</th>
+                                        <th class="px-6 py-4">Total</th>
+                                        <th class="px-6 py-4">Metode</th>
+                                        <th class="px-6 py-4">Status</th>
+                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-table" class="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+                                    <!-- JS Render -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: PIUTANG -->
+                <section id="view-piutang" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="piutang-grid">
+                        <!-- JS Render Card -->
+                    </div>
+                </section>
+
+                <!-- VIEW: SYNC -->
+                <section id="view-sync" class="hidden flex flex-col items-center justify-center space-y-8 py-20 text-center">
+                    <div class="space-y-4">
+                        <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto">
+                            <i data-lucide="cloud-lightning" class="w-10 h-10"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold">Manajemen Cloud</h2>
+                        <p class="text-slate-500 max-w-md mx-auto">Amankan data transaksi Anda dengan melakukan sinkronisasi ke Google Sheets secara berkala.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                        <button onclick="pushToCloud()" class="flex-grow p-6 bg-white dark:bg-slate-800 border-2 border-dashed border-blue-200 dark:border-slate-700 rounded-3xl flex flex-col items-center group hover:border-blue-500 transition">
+                            <i data-lucide="upload" class="mb-2 text-blue-600"></i>
+                            <span class="font-bold">Kirim Data</span>
+                            <span class="text-xs text-slate-400">Sync transaksi ke Sheets</span>
+                        </button>
+                        <button onclick="pullFromCloud()" class="flex-grow p-6 bg-white dark:bg-slate-800 border-2 border-dashed border-orange-200 dark:border-slate-700 rounded-3xl flex flex-col items-center group hover:border-orange-500 transition">
+                            <i data-lucide="download" class="mb-2 text-orange-600"></i>
+                            <span class="font-bold">Tarik Data</span>
+                            <span class="text-xs text-slate-400">Update katalog dari Sheets</span>
+                        </button>
+                    </div>
+                    <p id="last-sync" class="text-xs text-slate-400 font-medium">Terakhir Sinkronisasi: Belum pernah</p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: PRODUCT -->
+    <div id="modal-product" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-bold text-xl">Data Produk</h3>
+                <button onclick="closeModal('modal-product')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+            </div>
+            <form id="product-form" class="p-6 space-y-4">
+                <input type="hidden" id="prod-id">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase">Nama Produk</label>
+                    <input type="text" id="prod-name" required class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase">Kategori</label>
+                    <input type="text" id="prod-category" class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Makanan">
+                </div>
+
+                <!-- Variant Toggle -->
+                <div class="flex items-center space-x-3 py-2">
+                    <input type="checkbox" id="prod-has-variants" onchange="toggleVariantInputs()" class="w-5 h-5 rounded text-blue-600">
+                    <label for="prod-has-variants" class="text-sm font-bold text-slate-700 dark:text-slate-200">Gunakan 2 Varian / Harga</label>
+                </div>
+
+                <!-- Single Price Input -->
+                <div id="single-price-area" class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase">Harga (Rp)</label>
+                    <input type="number" id="prod-price" class="w-full p-3 bg-slate-50 dark:bg-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Variant Price Inputs -->
+                <div id="variant-price-area" class="hidden space-y-4 border-l-4 border-blue-100 pl-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Varian 1</label>
+                            <input type="text" id="v1-name" placeholder="Reguler" class="w-full p-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Harga Varian 1</label>
+                            <input type="number" id="v1-price" class="w-full p-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Varian 2</label>
+                            <input type="text" id="v2-name" placeholder="Besar" class="w-full p-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Harga Varian 2</label>
+                            <input type="number" id="v2-price" class="w-full p-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold mt-4 shadow-lg active:scale-95 transition">Simpan Produk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: VARIANT SELECTION (POS) -->
+    <div id="modal-select-variant" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6">
+            <h3 id="sel-prod-name" class="font-bold text-xl mb-4 text-center">Pilih Varian</h3>
+            <div id="variant-options" class="space-y-3">
+                <!-- JS Render Options -->
+            </div>
+            <button onclick="closeModal('modal-select-variant')" class="w-full mt-6 text-slate-400 text-sm font-bold">Batal</button>
+        </div>
+    </div>
+
+    <!-- NOTIF -->
+    <div id="notif" class="fixed bottom-6 right-6 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition transform translate-y-24 opacity-0 z-[100]">
+        <div id="notif-icon" class="p-2 bg-blue-600 rounded-lg"><i data-lucide="info" class="w-4 h-4"></i></div>
+        <span id="notif-msg" class="font-bold text-sm">Pesan Berhasil</span>
+    </div>
+
+    <script>
+        // CONFIG
+        const API_URL = ""; 
+        const API_KEY = "OWNER_SECRET_KEY_2024";
+
+        // APP STATE
+        let products = JSON.parse(localStorage.getItem('owner_products')) || [];
+        let transactions = JSON.parse(localStorage.getItem('owner_transactions')) || [];
+        let expenses = JSON.parse(localStorage.getItem('owner_expenses')) || [];
+        let cart = [];
+        let isDarkMode = localStorage.getItem('owner_dark') === 'true';
+        let salesChart = null;
+        let paymentChart = null;
+
+        // INITIALIZE
+        window.onload = () => {
+            lucide.createIcons();
+            if (isDarkMode) document.body.classList.add('dark');
+            switchView('dashboard');
+            checkConnection();
+            updateLastSyncUI();
+        }
+
+        // --- UI UTILS ---
+        function switchView(view) {
+            document.querySelectorAll('#view-container > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(`nav-${view}`).classList.add('active');
+
+            const pageData = {
+                dashboard: ['Dashboard', 'Ringkasan performa toko Anda.'],
+                pos: ['Input Transaksi', 'Buat rekaman penjualan baru.'],
+                expenses: ['Manajemen Pengeluaran', 'Catat biaya operasional toko.'],
+                products: ['Produk Saya', 'Kelola stok dan katalog produk.'],
+                reports: ['Laporan Penjualan', 'Daftar transaksi yang terekam.'],
+                piutang: ['Manajemen Piutang', 'Daftar transaksi hutang pelanggan.'],
+                sync: ['Koneksi Cloud', 'Sinkronkan data ke Google Sheets.']
+            }
+            document.getElementById('page-title').innerText = pageData[view][0];
+            document.getElementById('page-subtitle').innerText = pageData[view][1];
+
+            if (view === 'dashboard') initCharts();
+            if (view === 'pos') renderPOSProducts();
+            if (view === 'products') renderProductTable();
+            if (view === 'reports') renderReportTable();
+            if (view === 'piutang') renderPiutangGrid();
+            if (view === 'expenses') renderExpenseTable();
+        }
+
+        function toggleVariantInputs() {
+            const hasVariants = document.getElementById('prod-has-variants').checked;
+            document.getElementById('single-price-area').classList.toggle('hidden', hasVariants);
+            document.getElementById('variant-price-area').classList.toggle('hidden', !hasVariants);
+        }
+
+        // --- DASHBOARD ---
+        function initCharts() {
+            updateDashboardStats();
+            const ctxSales = document.getElementById('salesChart').getContext('2d');
+            const ctxPayment = document.getElementById('paymentChart').getContext('2d');
+            if (salesChart) salesChart.destroy();
+            if (paymentChart) paymentChart.destroy();
+
+            const labels = Array.from({length: 7}, (_, i) => {
+                const d = new Date(); d.setDate(d.getDate() - (6 - i));
+                return d.toLocaleDateString('id-ID', {weekday: 'short'});
+            });
+
+            const salesData = Array.from({length: 7}, (_, i) => {
+                const d = new Date(); d.setDate(d.getDate() - (6 - i));
+                const dStr = d.toLocaleDateString('id-ID');
+                return transactions.filter(t => t.date.includes(dStr)).reduce((acc, curr) => acc + curr.total, 0);
+            });
+
+            salesChart = new Chart(ctxSales, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Omset',
+                        data: salesData,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true, tension: 0.4, borderWidth: 3
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            const paymentCount = { "Tunai": 0, "Non-Tunai": 0, "Hutang": 0 };
+            transactions.forEach(t => {
+                let method = t.paymentMethod;
+                if (method === "QRIS" || method === "Transfer" || method === "Non-Tunai") paymentCount["Non-Tunai"]++;
+                else if (paymentCount.hasOwnProperty(method)) paymentCount[method]++;
+            });
+
+            paymentChart = new Chart(ctxPayment, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(paymentCount),
+                    datasets: [{
+                        data: Object.values(paymentCount),
+                        backgroundColor: ['#2563eb', '#10b981', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+            });
+        }
+
+        function updateDashboardStats() {
+            const today = new Date().toLocaleDateString('id-ID');
+            const thisMonth = new Date().toLocaleDateString('id-ID', { month: '2-digit', year: 'numeric' });
+            const todayTrx = transactions.filter(t => t.date.includes(today));
+            const todayExp = expenses.filter(e => e.date.includes(today));
+            const monthTrx = transactions.filter(t => t.date.includes(thisMonth));
+            const todayRevenue = todayTrx.reduce((a, b) => a + b.total, 0);
+            const todayExpense = todayExp.reduce((a, b) => a + b.amount, 0);
+            const monthRevenue = monthTrx.reduce((a, b) => a + b.total, 0);
+            const unsynced = transactions.filter(t => t.status === 'Pending').length + expenses.filter(e => e.status === 'Pending').length;
+
+            document.getElementById('stat-today-revenue').innerText = formatRupiah(todayRevenue);
+            document.getElementById('stat-today-expense').innerText = formatRupiah(todayExpense);
+            document.getElementById('stat-today-profit').innerText = formatRupiah(todayRevenue - todayExpense);
+            document.getElementById('stat-month-revenue').innerText = formatRupiah(monthRevenue);
+            document.getElementById('stat-unsynced').innerText = unsynced;
+        }
+
+        // --- EXPENSES ---
+        document.getElementById('expense-form').onsubmit = (e) => {
+            e.preventDefault();
+            const newExp = {
+                id: 'EXP-' + Date.now(),
+                date: new Date().toLocaleString('id-ID'),
+                category: document.getElementById('exp-category').value,
+                note: document.getElementById('exp-note').value,
+                amount: parseFloat(document.getElementById('exp-amount').value),
+                status: 'Pending'
+            };
+            expenses.push(newExp); saveState(); renderExpenseTable();
+            document.getElementById('expense-form').reset();
+            showNotif("Pengeluaran berhasil dicatat");
+        };
+
+        function renderExpenseTable() {
+            const table = document.getElementById('expense-table');
+            table.innerHTML = expenses.map(e => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td class="px-6 py-4 text-xs font-medium text-slate-500">${e.date}</td>
+                    <td class="px-6 py-4 font-bold text-xs">${e.category}</td>
+                    <td class="px-6 py-4">${e.note || '-'}</td>
+                    <td class="px-6 py-4 text-right font-bold text-red-500">${formatRupiah(e.amount)}</td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="deleteExpense('${e.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).reverse().join('');
+            lucide.createIcons();
+        }
+
+        function deleteExpense(id) {
+            if (confirm("Hapus catatan pengeluaran ini?")) {
+                expenses = expenses.filter(e => e.id !== id); saveState(); renderExpenseTable(); showNotif("Pengeluaran dihapus");
+            }
+        }
+
+        // --- PRODUCT MASTER ---
+        function renderProductTable() {
+            const table = document.getElementById('product-table');
+            table.innerHTML = products.map(p => {
+                let priceDisplay = '';
+                if (p.hasVariants) {
+                    priceDisplay = `<div class="text-[10px] text-slate-500">
+                        ${p.variants[0].name}: ${formatRupiah(p.variants[0].price)}<br>
+                        ${p.variants[1].name}: ${formatRupiah(p.variants[1].price)}
+                    </div>`;
+                } else {
+                    priceDisplay = `<span class="font-bold">${formatRupiah(p.price)}</span>`;
+                }
+                
+                return `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                    <td class="px-6 py-4 font-bold">${p.name}</td>
+                    <td class="px-6 py-4 text-slate-500">${p.category || '-'}</td>
+                    <td class="px-6 py-4 text-right">${priceDisplay}</td>
+                    <td class="px-6 py-4 text-center space-x-3">
+                        <button onclick="openProductModal('${p.id}')" class="text-blue-600 hover:underline">Edit</button>
+                        <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:underline">Hapus</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openProductModal(id = null) {
+            const form = document.getElementById('product-form');
+            form.reset();
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-has-variants').checked = false;
+            toggleVariantInputs();
+
+            if (id) {
+                const p = products.find(prod => prod.id === id);
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-category').value = p.category;
+                if (p.hasVariants) {
+                    document.getElementById('prod-has-variants').checked = true;
+                    document.getElementById('v1-name').value = p.variants[0].name;
+                    document.getElementById('v1-price').value = p.variants[0].price;
+                    document.getElementById('v2-name').value = p.variants[1].name;
+                    document.getElementById('v2-price').value = p.variants[1].price;
+                } else {
+                    document.getElementById('prod-price').value = p.price;
+                }
+                toggleVariantInputs();
+            }
+            document.getElementById('modal-product').classList.remove('hidden');
+        }
+
+        document.getElementById('product-form').onsubmit = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value || Date.now().toString();
+            const hasVariants = document.getElementById('prod-has-variants').checked;
+            
+            const newProduct = {
+                id,
+                name: document.getElementById('prod-name').value,
+                category: document.getElementById('prod-category').value,
+                hasVariants,
+                price: hasVariants ? 0 : parseFloat(document.getElementById('prod-price').value || 0),
+                variants: hasVariants ? [
+                    { name: document.getElementById('v1-name').value || 'Varian 1', price: parseFloat(document.getElementById('v1-price').value || 0) },
+                    { name: document.getElementById('v2-name').value || 'Varian 2', price: parseFloat(document.getElementById('v2-price').value || 0) }
+                ] : []
+            };
+
+            const idx = products.findIndex(p => p.id === id);
+            if (idx > -1) products[idx] = newProduct;
+            else products.push(newProduct);
+
+            saveState(); closeModal('modal-product'); renderProductTable(); showNotif("Produk disimpan");
+        }
+
+        function deleteProduct(id) {
+            if (confirm("Hapus produk ini?")) {
+                products = products.filter(p => p.id !== id); saveState(); renderProductTable();
+            }
+        }
+
+        // --- POS (KASIR) ---
+        function renderPOSProducts() {
+            const grid = document.getElementById('pos-grid');
+            const search = document.getElementById('pos-search').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(search));
+
+            grid.innerHTML = filtered.map(p => {
+                let priceLabel = p.hasVariants ? `${formatRupiah(p.variants[0].price)} - ${formatRupiah(p.variants[1].price)}` : formatRupiah(p.price);
+                return `
+                <div onclick="handlePOSClick('${p.id}')" class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm cursor-pointer hover:shadow-lg transition active:scale-95 group">
+                    <p class="text-[10px] font-bold text-blue-600 uppercase mb-1">${p.category || 'General'}</p>
+                    <h4 class="font-bold group-hover:text-blue-600 transition truncate">${p.name}</h4>
+                    <div class="mt-2 text-xs font-bold text-slate-500">${priceLabel}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function handlePOSClick(id) {
+            const p = products.find(prod => prod.id === id);
+            if (p.hasVariants) {
+                document.getElementById('sel-prod-name').innerText = p.name;
+                const optContainer = document.getElementById('variant-options');
+                optContainer.innerHTML = p.variants.map((v, i) => `
+                    <button onclick="addToCart('${p.id}', ${i})" class="w-full p-4 bg-slate-50 dark:bg-slate-700 hover:bg-blue-600 hover:text-white rounded-2xl flex justify-between items-center transition font-bold">
+                        <span>${v.name}</span>
+                        <span>${formatRupiah(v.price)}</span>
+                    </button>
+                `).join('');
+                document.getElementById('modal-select-variant').classList.remove('hidden');
+            } else {
+                addToCart(id);
+            }
+        }
+
+        function addToCart(id, variantIdx = null) {
+            const p = products.find(prod => prod.id === id);
+            const itemName = variantIdx !== null ? `${p.name} (${p.variants[variantIdx].name})` : p.name;
+            const itemPrice = variantIdx !== null ? p.variants[variantIdx].price : p.price;
+            const cartKey = variantIdx !== null ? `${p.id}-${variantIdx}` : p.id;
+
+            const inCart = cart.find(i => i.cartKey === cartKey);
+            if (inCart) {
+                inCart.qty++;
+            } else {
+                cart.push({ cartKey, id: p.id, name: itemName, price: itemPrice, qty: 1 });
+            }
+            
+            if (variantIdx !== null) closeModal('modal-select-variant');
+            renderCart();
+        }
+
+        function renderCart() {
+            const list = document.getElementById('cart-list');
+            list.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                    <div class="flex-grow">
+                        <p class="text-xs font-bold">${item.name}</p>
+                        <p class="text-[10px] text-slate-500">${formatRupiah(item.price)} x ${item.qty}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQty('${item.cartKey}', -1)" class="w-6 h-6 flex items-center justify-center bg-slate-100 dark:bg-slate-700 rounded-lg">-</button>
+                        <span class="text-xs font-bold">${item.qty}</span>
+                        <button onclick="updateQty('${item.cartKey}', 1)" class="w-6 h-6 flex items-center justify-center bg-slate-100 dark:bg-slate-700 rounded-lg">+</button>
+                    </div>
+                </div>
+            `).join('');
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            document.getElementById('cart-total').innerText = formatRupiah(total);
+        }
+
+        function updateQty(cartKey, change) {
+            const item = cart.find(i => i.cartKey === cartKey);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) cart = cart.filter(i => i.cartKey !== cartKey);
+                renderCart();
+            }
+        }
+
+        function clearCart() { cart = []; renderCart(); }
+
+        function toggleCustomerInput() {
+            const payment = document.getElementById('pos-payment').value;
+            document.getElementById('customer-input-area').classList.toggle('hidden', payment !== 'Hutang');
+        }
+
+        function processCheckout() {
+            if (cart.length === 0) return showNotif("Keranjang kosong");
+            const paymentMethod = document.getElementById('pos-payment').value;
+            const customer = document.getElementById('pos-customer').value;
+            if (paymentMethod === 'Hutang' && !customer) return showNotif("Nama pelanggan wajib untuk hutang");
+
+            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const newTrx = {
+                id: 'TRX-' + Date.now(),
+                date: new Date().toLocaleString('id-ID'),
+                customer: customer || 'Umum',
+                total, paymentMethod, status: 'Pending',
+                items: JSON.parse(JSON.stringify(cart))
+            }
+            transactions.push(newTrx); saveState(); clearCart();
+            document.getElementById('pos-customer').value = '';
+            showNotif("Transaksi Berhasil!");
+        }
+
+        // --- REPORTS & PIUTANG ---
+        function renderReportTable() {
+            const table = document.getElementById('report-table');
+            table.innerHTML = transactions.map(t => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <td class="px-6 py-4 text-xs font-medium text-slate-500">${t.date}</td>
+                    <td class="px-6 py-4 font-bold text-xs">${t.id}</td>
+                    <td class="px-6 py-4 font-medium">${t.customer}</td>
+                    <td class="px-6 py-4 font-bold text-blue-600">${formatRupiah(t.total)}</td>
+                    <td class="px-6 py-4 text-xs font-bold">${t.paymentMethod}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 ${t.status === 'Synced' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'} rounded-lg text-[10px] font-bold">
+                            ${t.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="deleteTransaction('${t.id}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).reverse().join('');
+            lucide.createIcons();
+        }
+
+        function deleteTransaction(id) {
+            if (confirm("Hapus transaksi ini?")) {
+                transactions = transactions.filter(t => t.id !== id); saveState(); renderReportTable();
+            }
+        }
+
+        function renderPiutangGrid() {
+            const grid = document.getElementById('piutang-grid');
+            const data = transactions.filter(t => t.paymentMethod === 'Hutang');
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-10 text-center text-slate-400">Tidak ada piutang aktif.</div>`;
+                return;
+            }
+            grid.innerHTML = data.map(t => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-red-100 dark:border-red-900/30 shadow-sm">
+                    <h4 class="font-bold text-lg">${t.customer}</h4>
+                    <p class="text-xs text-slate-500 mb-4">${t.date}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Jumlah Piutang</p>
+                    <p class="text-2xl font-bold text-red-600 mb-6">${formatRupiah(t.total)}</p>
+                    <button onclick="settleDebt('${t.id}')" class="w-full py-3 bg-slate-900 text-white dark:bg-white dark:text-slate-900 rounded-2xl font-bold text-sm">LUNASI</button>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        function settleDebt(id) {
+            if (confirm("Lunasi hutang ini?")) {
+                const trx = transactions.find(t => t.id === id);
+                if (trx) { trx.paymentMethod = 'Tunai'; trx.status = 'Pending'; saveState(); renderPiutangGrid(); showNotif("Hutang dilunasi"); }
+            }
+        }
+
+        // --- CLOUD SYNC ---
+        async function pushToCloud() {
+            if (!API_URL) return showNotif("API URL kosong", "error");
+            setSyncLoading(true);
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        apiKey: API_KEY, action: 'sync_all',
+                        data: { products, transactions: transactions.filter(t => t.status === 'Pending'), expenses: expenses.filter(e => e.status === 'Pending') }
+                    })
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    transactions.forEach(t => t.status = 'Synced'); expenses.forEach(e => e.status = 'Synced');
+                    saveState(); localStorage.setItem('last_sync', new Date().toLocaleString()); updateLastSyncUI(); showNotif("Sync Berhasil");
+                }
+            } catch (err) { showNotif("Gagal Sync", "error"); } finally { setSyncLoading(false); }
+        }
+
+        async function pullFromCloud() {
+            if (!API_URL) return showNotif("API URL kosong", "error");
+            setSyncLoading(true);
+            try {
+                const response = await fetch(`${API_URL}?action=get_data`);
+                const result = await response.json();
+                if (result.status === 'success') {
+                    if (result.products) products = result.products.map(p => ({ ...p, price: parseFloat(p.price || 0), hasVariants: p.hasVariants === true || p.hasVariants === "true", variants: typeof p.variants === 'string' ? JSON.parse(p.variants) : (p.variants || []) }));
+                    if (result.expenses) expenses = result.expenses.map(e => ({ ...e, amount: parseFloat(e.amount) }));
+                    saveState(); showNotif("Data Berhasil Ditarik"); renderProductTable();
+                }
+            } catch (err) { showNotif("Gagal Ambil Data", "error"); } finally { setSyncLoading(false); }
+        }
+
+        // --- UTILS ---
+        function formatRupiah(num) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num); }
+        function saveState() {
+            localStorage.setItem('owner_products', JSON.stringify(products));
+            localStorage.setItem('owner_transactions', JSON.stringify(transactions));
+            localStorage.setItem('owner_expenses', JSON.stringify(expenses));
+        }
+        function showNotif(msg, type = "success") {
+            const n = document.getElementById('notif'); document.getElementById('notif-msg').innerText = msg;
+            n.className = `fixed bottom-6 right-6 ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'} text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition transform z-[100]`;
+            n.style.opacity = "1"; n.style.transform = "translateY(0)";
+            setTimeout(() => { n.style.opacity = "0"; n.style.transform = "translateY(100px)"; }, 3000);
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function toggleDarkMode() { isDarkMode = !isDarkMode; document.body.classList.toggle('dark'); localStorage.setItem('owner_dark', isDarkMode); }
+        function setSyncLoading(active) { const icon = document.getElementById('sync-icon'); if (active) icon.classList.add('animate-spin'); else icon.classList.remove('animate-spin'); }
+        function checkConnection() {
+            const update = () => {
+                const b = document.getElementById('status-badge'); const t = document.getElementById('status-text');
+                if (navigator.onLine) { b.className = "flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-xs font-bold"; t.innerText = "ONLINE"; }
+                else { b.className = "flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-700 rounded-full text-xs font-bold"; t.innerText = "OFFLINE"; }
+            }
+            window.addEventListener('online', update); window.addEventListener('offline', update); update();
+        }
+        function updateLastSyncUI() { document.getElementById('last-sync').innerText = "Terakhir Sinkronisasi: " + (localStorage.getItem('last_sync') || 'Belum pernah'); }
+        function exportToCSV() {
+            if (transactions.length === 0) return;
+            const headers = ["Tanggal", "ID", "Pelanggan", "Total", "Metode"];
+            const rows = transactions.map(t => [t.date, t.id, t.customer, t.total, t.paymentMethod]);
+            let csv = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
+            const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `laporan_${Date.now()}.csv`; link.click();
+        }
+    </script>
+</body>
+</html>
