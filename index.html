@@ -70,7 +70,7 @@
     <!-- LOADING OVERLAY -->
     <div id="loading-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex-col items-center justify-center z-[200] animate-fadeIn">
         <div class="loader-ring mb-4"></div>
-        <p id="loading-text" class="text-white font-black uppercase tracking-[0.3em] text-xs">Sinkronisasi Data...</p>
+        <p id="loading-text" class="text-white font-black uppercase tracking-[0.3em] text-xs">Menghubungkan ke Cloud...</p>
     </div>
 
     <div id="app" class="flex flex-col md:flex-row h-screen overflow-hidden">
@@ -86,28 +86,28 @@
             
             <nav class="flex-grow px-6 space-y-1.5 overflow-y-auto no-scrollbar">
                 <button onclick="switchView('dashboard')" id="nav-dashboard" class="sidebar-link active w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="layout-grid" class="w-5 h-5"></i> <span class="font-bold text-sm">Dashboard</span>
+                    <i data-lucide="layout-grid" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Dashboard</span>
                 </button>
                 <button onclick="switchView('pos')" id="nav-pos" class="sidebar-link w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="shopping-bag" class="w-5 h-5"></i> <span class="font-bold text-sm">Kasir Utama</span>
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Kasir Utama</span>
                 </button>
                 <button onclick="switchView('expenses')" id="nav-expenses" class="sidebar-link w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="wallet" class="w-5 h-5"></i> <span class="font-bold text-sm">Pengeluaran</span>
+                    <i data-lucide="wallet" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Pengeluaran</span>
                 </button>
                 <button onclick="switchView('products')" id="nav-products" class="sidebar-link w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="box" class="w-5 h-5"></i> <span class="font-bold text-sm">Menu Produk</span>
+                    <i data-lucide="box" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Menu Produk</span>
                 </button>
                 <button onclick="switchView('reports')" id="nav-reports" class="sidebar-link w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="file-text" class="w-5 h-5"></i> <span class="font-bold text-sm">Rekap Laporan</span>
+                    <i data-lucide="file-text" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Rekap Laporan</span>
                 </button>
                 <button onclick="switchView('piutang')" id="nav-piutang" class="sidebar-link w-full flex items-center space-x-3.5 p-3.5 rounded-2xl transition text-slate-400 hover:bg-slate-800 hover:text-blue-400">
-                    <i data-lucide="users" class="w-5 h-5"></i> <span class="font-bold text-sm">Piutang</span>
+                    <i data-lucide="users" class="w-5 h-5"></i> <span class="font-bold text-sm text-white">Piutang</span>
                 </button>
             </nav>
 
             <div class="p-6 border-t border-slate-800 space-y-3">
                 <button onclick="switchView('sync')" class="w-full flex items-center space-x-3 p-3.5 rounded-2xl bg-blue-900/20 text-blue-400 transition hover:bg-blue-900/40 border border-blue-900/30">
-                    <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> <span class="text-xs font-black uppercase tracking-widest">Sinkron Cloud</span>
+                    <i data-lucide="refresh-cw" id="sync-icon" class="w-4 h-4"></i> <span class="text-xs font-black uppercase tracking-widest text-white">Sinkron Cloud</span>
                 </button>
             </div>
         </aside>
@@ -115,9 +115,9 @@
         <!-- MAIN CONTENT -->
         <main class="flex-grow overflow-y-auto p-6 md:p-10 no-scrollbar bg-slate-950">
             
-            <header class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 border-b border-slate-900 pb-8">
+            <header class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6 border-b border-slate-900 pb-8 text-white">
                 <div>
-                    <h1 id="page-title" class="text-4xl font-black text-white tracking-tighter uppercase">Warkop JP</h1>
+                    <h1 id="page-title" class="text-4xl font-black tracking-tighter uppercase">Warkop JP</h1>
                     <p id="page-subtitle" class="text-slate-500 font-medium text-lg mt-1">Status operasional hari ini.</p>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -129,35 +129,35 @@
             </header>
 
             <div id="view-container">
-                <!-- VIEW: DASHBOARD -->
-                <section id="view-dashboard" class="space-y-8 animate-fadeIn">
+                <!-- VIEW DASHBOARD -->
+                <section id="view-dashboard" class="space-y-8 animate-fadeIn text-white">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="ui-card p-7 rounded-[2rem] border-l-4 border-l-blue-500">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Omset Hari Ini</p>
-                            <h2 id="stat-today-revenue" class="text-3xl font-black text-white">Rp 0</h2>
+                            <h2 id="stat-today-revenue" class="text-3xl font-black">Rp 0</h2>
                         </div>
                         <div class="ui-card p-7 rounded-[2rem] border-l-4 border-l-red-500">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Biaya Keluar</p>
-                            <h2 id="stat-today-expense" class="text-3xl font-black text-white">Rp 0</h2>
+                            <h2 id="stat-today-expense" class="text-3xl font-black">Rp 0</h2>
                         </div>
                         <div class="ui-card p-7 rounded-[2rem] border-l-4 border-l-emerald-500">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Laba Bersih</p>
-                            <h2 id="stat-today-profit" class="text-3xl font-black text-white">Rp 0</h2>
+                            <h2 id="stat-today-profit" class="text-3xl font-black">Rp 0</h2>
                         </div>
                         <div class="ui-card p-7 rounded-[2rem] border-l-4 border-l-orange-500">
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Belum Sinkron</p>
-                            <h2 id="stat-unsynced" class="text-3xl font-black text-white">0</h2>
+                            <h2 id="stat-unsynced" class="text-3xl font-black">0</h2>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 ui-card p-8 rounded-[2.5rem]">
-                            <h3 class="font-black text-white mb-8 flex items-center text-xl tracking-tight uppercase">
+                            <h3 class="font-black mb-8 flex items-center text-xl tracking-tight uppercase">
                                 <i data-lucide="line-chart" class="w-6 h-6 mr-3 text-blue-500"></i> Tren Penjualan
                             </h3>
                             <canvas id="salesChart" height="150"></canvas>
                         </div>
                         <div class="ui-card p-8 rounded-[2.5rem]">
-                            <h3 class="font-black text-white mb-8 flex items-center text-xl tracking-tight uppercase">
+                            <h3 class="font-black mb-8 flex items-center text-xl tracking-tight uppercase">
                                 <i data-lucide="pie-chart" class="w-6 h-6 mr-3 text-blue-500"></i> Metode Bayar
                             </h3>
                             <canvas id="paymentChart" height="250"></canvas>
@@ -165,8 +165,8 @@
                     </div>
                 </section>
 
-                <!-- VIEW: POS -->
-                <section id="view-pos" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fadeIn h-full">
+                <!-- VIEW POS -->
+                <section id="view-pos" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fadeIn h-full text-white">
                     <div class="lg:col-span-2 space-y-8">
                         <div class="relative group">
                             <i data-lucide="search" class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-blue-500 transition-colors"></i>
@@ -176,7 +176,7 @@
                     </div>
                     <div class="bg-slate-900 rounded-[2.5rem] shadow-2xl flex flex-col h-[calc(100vh-220px)] border border-slate-800 overflow-hidden">
                         <div class="p-8 border-b border-slate-800 flex justify-between items-center bg-slate-900/50 backdrop-blur-md">
-                            <h3 class="font-black text-white uppercase tracking-tighter text-xl">Keranjang</h3>
+                            <h3 class="font-black uppercase tracking-tighter text-xl">Keranjang</h3>
                             <button onclick="clearCart()" class="text-red-500 hover:text-red-400 text-xs font-black uppercase tracking-widest transition">Reset</button>
                         </div>
                         <div id="cart-list" class="flex-grow overflow-y-auto p-6 space-y-4 no-scrollbar"></div>
@@ -211,16 +211,16 @@
                 </section>
 
                 <!-- VIEW: EXPENSES -->
-                <section id="view-expenses" class="hidden space-y-10 animate-fadeIn">
+                <section id="view-expenses" class="hidden space-y-10 animate-fadeIn text-white">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         <div class="ui-card p-10 rounded-[3rem] h-fit">
-                            <h3 class="font-black text-white text-2xl mb-10 flex items-center tracking-tight uppercase">
+                            <h3 class="font-black text-2xl mb-10 flex items-center tracking-tight uppercase">
                                 <i data-lucide="plus-circle" class="w-7 h-7 mr-3 text-red-500"></i> Catat Biaya
                             </h3>
                             <form id="expense-form" class="space-y-8">
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tanggal</label>
-                                    <input type="date" id="exp-date" required class="w-full p-4 ui-input rounded-2xl outline-none font-bold uppercase text-white">
+                                    <input type="date" id="exp-date" required class="w-full p-4 ui-input rounded-2xl outline-none font-bold uppercase">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Kategori</label>
@@ -235,7 +235,7 @@
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Keterangan</label>
-                                    <input type="text" id="exp-note" placeholder="..." class="w-full p-4 ui-input rounded-2xl outline-none text-white">
+                                    <input type="text" id="exp-note" placeholder="..." class="w-full p-4 ui-input rounded-2xl outline-none">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nominal (Rp)</label>
@@ -245,8 +245,8 @@
                             </form>
                         </div>
                         <div class="lg:col-span-2 ui-card rounded-[3rem] overflow-hidden">
-                            <div class="p-8 border-b border-slate-800 bg-slate-900/50 text-white">
-                                <h3 class="font-black uppercase tracking-widest text-sm">Riwayat Operasional</h3>
+                            <div class="p-8 border-b border-slate-800 bg-slate-900/50">
+                                <h3 class="font-black uppercase tracking-widest text-sm text-white">Riwayat Operasional</h3>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
@@ -266,9 +266,9 @@
                 </section>
 
                 <!-- VIEW: PRODUCTS -->
-                <section id="view-products" class="hidden space-y-8 animate-fadeIn">
+                <section id="view-products" class="hidden space-y-8 animate-fadeIn text-white">
                     <div class="flex justify-between items-center px-4">
-                        <h3 class="font-black text-white text-3xl tracking-tighter uppercase">Daftar Menu</h3>
+                        <h3 class="font-black text-3xl tracking-tighter uppercase">Daftar Menu</h3>
                         <button onclick="openProductModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black flex items-center space-x-2 shadow-2xl uppercase text-xs tracking-widest transition-all">
                             <i data-lucide="plus" class="w-5 h-5"></i> <span>Tambah Menu</span>
                         </button>
@@ -289,7 +289,7 @@
                 </section>
 
                 <!-- VIEW: REPORTS -->
-                <section id="view-reports" class="hidden space-y-8 animate-fadeIn">
+                <section id="view-reports" class="hidden space-y-8 animate-fadeIn text-white">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 px-4">
                         <div class="flex flex-wrap items-center gap-4">
                             <input type="date" id="filter-date" class="p-4 rounded-2xl ui-input text-sm font-bold outline-none shadow-sm transition-all uppercase">
@@ -324,17 +324,17 @@
                 </section>
 
                 <!-- VIEW: PIUTANG -->
-                <section id="view-piutang" class="hidden space-y-8 animate-fadeIn">
+                <section id="view-piutang" class="hidden space-y-8 animate-fadeIn text-white">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4" id="piutang-grid"></div>
                 </section>
 
                 <!-- VIEW: SYNC -->
-                <section id="view-sync" class="hidden flex flex-col items-center justify-center space-y-12 py-20 text-center animate-fadeIn">
+                <section id="view-sync" class="hidden flex flex-col items-center justify-center space-y-12 py-20 text-center animate-fadeIn text-white">
                     <div class="space-y-6">
                         <div class="w-32 h-32 bg-blue-900/30 text-blue-400 rounded-[3rem] flex items-center justify-center mx-auto shadow-2xl border border-blue-800/30">
                             <i data-lucide="cloud" class="w-16 h-16"></i>
                         </div>
-                        <h2 class="text-5xl font-black text-white tracking-tighter uppercase">Sinkronisasi Cloud</h2>
+                        <h2 class="text-5xl font-black tracking-tighter uppercase">Sinkronisasi Cloud</h2>
                         <p class="text-slate-500 max-w-sm mx-auto font-bold text-lg leading-relaxed">Amankan data Warkop JP dengan menghubungkan database lokal ke Google Sheets.</p>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-2xl px-6">
@@ -342,15 +342,15 @@
                             <div class="p-5 bg-blue-900/30 rounded-3xl mb-6 group-hover:scale-110 transition">
                                 <i data-lucide="upload-cloud" class="w-12 h-12 text-blue-400"></i>
                             </div>
-                            <span class="font-black text-white uppercase tracking-widest text-sm">Upload ke Cloud</span>
-                            <span class="text-[10px] text-slate-500 mt-3 font-black tracking-widest uppercase italic">Lokal → Cloud</span>
+                            <span class="font-black uppercase tracking-widest text-sm">Upload ke Cloud</span>
+                            <span class="text-[10px] text-slate-500 mt-3 font-black tracking-widest uppercase italic text-white">Lokal → Cloud</span>
                         </button>
                         <button onclick="pullFromCloud()" class="bg-slate-900 border-2 border-slate-800 p-12 rounded-[3.5rem] flex flex-col items-center group hover:border-orange-500 hover:shadow-2xl transition duration-500 transform hover:-translate-y-3">
                             <div class="p-5 bg-orange-900/30 rounded-3xl mb-6 group-hover:scale-110 transition">
                                 <i data-lucide="download-cloud" class="w-12 h-12 text-orange-400"></i>
                             </div>
-                            <span class="font-black text-white uppercase tracking-widest text-sm">Tarik dari Cloud</span>
-                            <span class="text-[10px] text-slate-500 mt-3 font-black tracking-widest uppercase italic">Cloud → Lokal</span>
+                            <span class="font-black uppercase tracking-widest text-sm">Tarik dari Cloud</span>
+                            <span class="text-[10px] text-slate-500 mt-3 font-black tracking-widest uppercase italic text-white">Cloud → Lokal</span>
                         </button>
                     </div>
                     <p id="last-sync" class="text-[10px] text-slate-500 font-black uppercase tracking-widest bg-slate-900 px-8 py-3 rounded-full border border-slate-800 shadow-inner italic">Database: Siap</p>
@@ -381,7 +381,7 @@
 
                 <div class="flex items-center space-x-4 bg-slate-950/40 p-6 rounded-3xl border border-slate-800">
                     <input type="checkbox" id="prod-has-variants" onchange="toggleVariantInputs()" class="w-7 h-7 rounded-xl border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer shadow-inner">
-                    <label for="prod-has-variants" class="text-sm font-black text-slate-300 cursor-pointer uppercase tracking-tight">Aktifkan Dua Harga</label>
+                    <label for="prod-has-variants" class="text-sm font-black text-slate-300 cursor-pointer uppercase tracking-tight text-white">Aktifkan Dua Harga</label>
                 </div>
 
                 <div id="single-price-area" class="space-y-1.5 animate-fadeIn">
@@ -412,7 +412,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] font-black shadow-2xl transition transform active:scale-95 uppercase tracking-widest text-sm">Simpan Ke Database</button>
+                <button type="submit" class="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-[2.5rem] font-black shadow-2xl transition transform active:scale-95 uppercase tracking-widest text-sm">Simpan Produk</button>
             </form>
         </div>
     </div>
@@ -420,33 +420,22 @@
     <!-- MODAL VARIANT SELECTION (POS) -->
     <div id="modal-select-variant" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl hidden flex items-center justify-center z-50 p-6 text-white">
         <div class="bg-slate-900 w-full max-w-sm rounded-[3.5rem] overflow-hidden shadow-2xl border border-slate-800 p-10 text-center animate-fadeIn">
-            <h3 id="sel-prod-name" class="font-black text-3xl mb-3 text-white uppercase tracking-tighter leading-none">Pilih Menu</h3>
-            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-12">Pilih ukuran pesanan</p>
+            <h3 id="sel-prod-name" class="font-black text-3xl mb-3 uppercase tracking-tighter leading-none">Pilih Menu</h3>
+            <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-12">Pilih ukuran pikeun pesenan ieu</p>
             <div id="variant-options-container" class="space-y-5"></div>
             <button onclick="closeModal('modal-select-variant')" class="w-full mt-12 text-slate-500 text-[10px] font-black uppercase tracking-widest hover:text-white transition tracking-[0.2em]">Batal & Tutup</button>
         </div>
     </div>
 
-    <!-- NOTIFIKASI -->
-    <div id="notif" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-white text-slate-950 px-12 py-6 rounded-[2.5rem] shadow-2xl flex items-center space-x-5 transition transform translate-y-40 opacity-0 z-[100] border border-slate-100">
-        <div id="notif-icon" class="p-2.5 bg-blue-600 rounded-2xl text-white shadow-lg"><i data-lucide="info" class="w-5 h-5"></i></div>
-        <span id="notif-msg" class="font-black text-sm uppercase tracking-widest"></span>
-    </div>
-
     <script>
-        // ==========================================
-        // KONFIGURASI - URL API Google Apps Script
-        // ==========================================
         const API_URL = "https://script.google.com/macros/s/AKfycbwdzz8hzAvxKylOQn6bBqL_uDSTPNZexUhaWAsAydxzayFPJWoVjK347sFVSXL5dSGJ/exec"; 
         const API_KEY = "OWNER_SECRET_KEY_2024";
 
-        // STATE APLIKASI
         let products = JSON.parse(localStorage.getItem('owner_products')) || [];
         let transactions = JSON.parse(localStorage.getItem('owner_transactions')) || [];
         let expenses = JSON.parse(localStorage.getItem('owner_expenses')) || [];
         let cart = [];
-        let salesChart = null;
-        let paymentChart = null;
+        let salesChart = null, paymentChart = null;
 
         window.onload = () => {
             lucide.createIcons();
@@ -455,54 +444,74 @@
             document.getElementById('exp-date').value = today;
             switchView('dashboard');
             checkConnection();
-            updateLastSyncUI();
         }
 
         // --- SISTEM SINKRONISASI PINTAR (UTAMA) ---
 
-        function setSyncLoading(active, text = "Sinkronisasi Data...") {
+        function setSyncLoading(active, text = "Sinkronisasi...") {
             const overlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
-            const icon = document.getElementById('sync-icon');
             if (active) {
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+                overlay.classList.replace('hidden', 'flex');
                 loadingText.innerText = text;
-                if (icon) icon.classList.add('animate-spin');
             } else {
-                overlay.classList.add('hidden');
-                overlay.classList.remove('flex');
-                if (icon) icon.classList.remove('animate-spin');
+                overlay.classList.replace('flex', 'hidden');
+            }
+        }
+
+        function parseVarianSmart(str) {
+            if (!str || str === "" || str === "[]" || str === "null") return [];
+            try {
+                return JSON.parse(str);
+            } catch (e) {
+                try {
+                    const cleanStr = str.trim();
+                    const parts = cleanStr.split(/},?\s?{/);
+                    return parts.map(p => {
+                        const content = p.replace(/{|}/g, '');
+                        const obj = {};
+                        const fields = content.split(/,\s?/);
+                        fields.forEach(f => {
+                            const [k, v] = f.split('=');
+                            if (k.trim() === 'label') obj.name = v.trim();
+                            if (k.trim() === 'harga') obj.price = parseFloat(v.trim());
+                        });
+                        return obj;
+                    });
+                } catch (err) {
+                    console.error("Gagal parsing varian:", str);
+                    return [];
+                }
             }
         }
 
         async function pullFromCloud() {
-            if (!API_URL || API_URL.trim() === "") return showNotif("API URL Tacan Dieusian!", "error");
+            if (!API_URL) return showNotif("URL API Belum Diisi", "error");
             setSyncLoading(true, "Menarik Data Dari Cloud...");
             try {
                 const response = await fetch(`${API_URL}?action=get_data`);
-                if (!response.ok) throw new Error("Jaringan Bermasalah");
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // 1. Sinkronisasi Produk (Gunakan heading: id, nama, varian)
                     if (result.products) {
-                        products = result.products.map(p => ({
-                            id: (p.id || Date.now()).toString(),
-                            name: p.nama || "Menu Tanpa Nama",
-                            category: "Umum",
-                            hasVariants: (p.varian && p.varian !== "" && p.varian !== "[]"),
-                            variants: p.varian ? (typeof p.varian === 'string' ? JSON.parse(p.varian) : p.varian) : [],
-                            price: 0
-                        }));
+                        products = result.products.map(p => {
+                            const parsedVarian = parseVarianSmart(p.varian);
+                            return {
+                                id: (p.id || Date.now()).toString(),
+                                name: p.nama || "Menu",
+                                category: "Umum",
+                                hasVariants: parsedVarian.length > 0,
+                                variants: parsedVarian,
+                                price: parsedVarian.length > 0 ? 0 : parseFloat(p.pangaos || 0)
+                            };
+                        });
                     }
 
-                    // 2. Sinkronisasi Pengeluaran (Gunakan heading: id, timestamp, tanggal, kategori, nominal, keterangan)
                     if (result.expenses) {
                         result.expenses.forEach(cloudExp => {
-                            if (!expenses.some(local => local.id.toString() === (cloudExp.id || "").toString())) {
+                            if (!expenses.some(local => local.id.toString() === cloudExp.id.toString())) {
                                 expenses.push({
-                                    id: (cloudExp.id || Date.now()).toString(),
+                                    id: cloudExp.id.toString(),
                                     date: formatDateString(cloudExp.tanggal),
                                     category: cloudExp.kategori || "Lain-lain",
                                     note: cloudExp.keterangan || "",
@@ -513,64 +522,49 @@
                         });
                     }
 
-                    // 3. Sinkronisasi Transaksi (Logika Re-grouping dari Baris Excel)
                     if (result.transactions) {
-                        const groupedTrx = regroupCloudTransactions(result.transactions);
-                        groupedTrx.forEach(cloudTrx => {
-                            const index = transactions.findIndex(local => local.id.toString() === cloudTrx.id.toString());
-                            if (index === -1) {
-                                transactions.push(cloudTrx);
-                            } else {
-                                transactions[index].status = 'Synced';
-                            }
+                        const grouped = regroupCloudTransactions(result.transactions);
+                        grouped.forEach(cloudTrx => {
+                            const idx = transactions.findIndex(local => local.id.toString() === cloudTrx.id.toString());
+                            if (idx === -1) transactions.push(cloudTrx);
+                            else transactions[idx].status = 'Synced';
                         });
                     }
 
-                    // 4. Update Status Piutang (Jika ada di cloud piutang lunas, update lokal)
                     if (result.piutang) {
-                        result.piutang.forEach(cloudPiu => {
-                            const trxIndex = transactions.findIndex(t => t.id.toString() === cloudPiu.transaksi_id.toString());
-                            if (trxIndex !== -1 && (cloudPiu.status === "Lunas" || parseFloat(cloudPiu.sisa || 0) <= 0)) {
-                                transactions[trxIndex].paymentMethod = 'Tunai';
+                        result.piutang.forEach(p => {
+                            const tIdx = transactions.findIndex(t => t.id.toString() === p.transaksi_id.toString());
+                            if (tIdx !== -1 && (p.status === "Lunas" || parseFloat(p.sisa) <= 0)) {
+                                transactions[tIdx].paymentMethod = 'Tunai';
                             }
                         });
                     }
 
                     saveState();
-                    showNotif("DATA BERHASIL DITARIK");
+                    showNotif("DATA TERBARU DIAMBIL");
                     switchView('dashboard');
-                } else {
-                    showNotif("Gagal: " + result.message, "error");
                 }
-            } catch (err) {
-                console.error(err);
-                showNotif("GAGAL MENARIK DATA: " + err.message, "error");
-            } finally {
-                setSyncLoading(false);
-            }
+            } catch (err) { showNotif("GAGAL MENARIK DATA", "error"); } finally { setSyncLoading(false); }
         }
 
         async function pushToCloud() {
-            if (!API_URL || API_URL.trim() === "") return showNotif("API URL Kosong", "error");
+            if (!API_URL) return showNotif("URL API Belum Diisi", "error");
             const unsyncedTrx = transactions.filter(t => t.status === 'Pending');
             const unsyncedExp = expenses.filter(e => e.status === 'Pending');
-            if (unsyncedTrx.length === 0 && unsyncedExp.length === 0) return showNotif("SEMUA DATA SUDAH SINKRON");
+            if (!unsyncedTrx.length && !unsyncedExp.length) return showNotif("DATA SUDAH SINGKRON");
 
             setSyncLoading(true, "Mengunggah Data...");
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        apiKey: API_KEY, action: 'sync_all',
-                        data: { products, transactions: unsyncedTrx, expenses: unsyncedExp }
-                    })
+                    body: JSON.stringify({ apiKey: API_KEY, action: 'sync_all', data: { products, transactions: unsyncedTrx, expenses: unsyncedExp } })
                 });
                 const res = await response.json();
                 if (res.status === 'success') {
                     transactions.forEach(t => t.status = 'Synced');
                     expenses.forEach(e => e.status = 'Synced');
-                    saveState();
-                    showNotif("SINKRONISASI BERHASIL");
+                    saveState(); showNotif("SINGKRON BERHASIL");
+                    switchView('dashboard');
                 }
             } catch (err) { showNotif("GAGAL TERHUBUNG CLOUD", "error"); } finally { setSyncLoading(false); }
         }
@@ -580,26 +574,17 @@
             cloudRows.forEach(row => {
                 const id = row.id.toString();
                 if (!trxMap.has(id)) {
-                    trxMap.set(id, {
-                        id: id,
-                        date: formatDateString(row.tanggal),
-                        customer: row.pelanggan || "Umum",
-                        paymentMethod: row.metode || "Tunai",
-                        total: 0,
-                        status: 'Synced',
-                        items: []
-                    });
+                    trxMap.set(id, { id, date: formatDateString(row.tanggal), customer: row.pelanggan || "Umum", paymentMethod: row.metode || "Tunai", total: 0, status: 'Synced', items: [] });
                 }
                 const trx = trxMap.get(id);
-                const qty = parseInt(row.qty || 1);
-                const totalLine = parseFloat(row.total || 0);
-                trx.items.push({
-                    id: row.produk_id || "raw",
-                    name: row.produk_nama + (row.varian_label && row.varian_label !== "-" ? ` (${row.varian_label})` : ""),
-                    price: totalLine / qty,
-                    qty: qty
+                const q = parseInt(row.qty || 1), t = parseFloat(row.total || 0);
+                trx.items.push({ 
+                    id: row.produk_id || "raw", 
+                    name: (row.produk_nama || "Item") + (row.varian_label && row.varian_label !== "-" ? ` (${row.varian_label})` : ""), 
+                    price: t / q, 
+                    qty: q 
                 });
-                trx.total += totalLine;
+                trx.total += t;
             });
             return Array.from(trxMap.values());
         }
@@ -610,7 +595,7 @@
             return isNaN(d.getTime()) ? val.toString().split('T')[0] : d.toISOString().split('T')[0];
         }
 
-        // --- SISTEM UI & RENDER ---
+        // --- UI & RENDER UTILS ---
         function switchView(view) {
             document.querySelectorAll('#view-container > section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`view-${view}`).classList.remove('hidden');
@@ -630,14 +615,11 @@
             const search = document.getElementById('pos-search').value.toLowerCase();
             const filtered = products.filter(p => p.name.toLowerCase().includes(search));
             grid.innerHTML = filtered.map(p => {
-                const label = p.hasVariants ? `${formatRupiah(p.variants[0].price)}` : 'N/A';
+                const label = p.hasVariants ? `${formatRupiah(p.variants[0].price)}` : 'Set Harga';
                 return `<div onclick="handlePOSClick('${p.id}')" class="bg-slate-900 p-6 rounded-[2.5rem] border border-slate-800 cursor-pointer hover:border-blue-500 transition group shadow-sm">
                     <p class="text-[10px] font-black text-blue-400 uppercase mb-2 tracking-widest leading-none">${p.category || 'MENU'}</p>
                     <h4 class="font-black text-white group-hover:text-blue-400 transition truncate text-lg">${p.name}</h4>
-                    <div class="mt-6 flex justify-between items-center">
-                        <span class="text-xs font-black text-slate-500 uppercase tracking-tight">${label} ${p.hasVariants ? '++' : ''}</span>
-                        <div class="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 transition shadow-sm"><i data-lucide="plus" class="w-5 h-5 text-white"></i></div>
-                    </div>
+                    <div class="mt-6 flex justify-between items-center"><span class="text-xs font-black text-slate-500 uppercase tracking-tight">${label} ${p.hasVariants ? '++' : ''}</span><div class="w-10 h-10 bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 transition shadow-sm"><i data-lucide="plus" class="w-5 h-5 text-white"></i></div></div>
                 </div>`;
             }).join('');
             lucide.createIcons();
@@ -677,7 +659,7 @@
                     <span class="font-black w-5 text-center text-white">${item.qty}</span>
                     <button onclick="updateQty('${item.cartKey}', 1)" class="w-9 h-9 flex items-center justify-center bg-slate-800 rounded-xl text-white font-bold hover:text-blue-500 transition shadow-sm">+</button>
                 </div></div>`).join('');
-            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
             document.getElementById('cart-total').innerText = formatRupiah(total);
         }
 
@@ -689,56 +671,18 @@
         function clearCart() { cart = []; renderCart(); }
 
         function processCheckout() {
-            if (cart.length === 0) return showNotif("Keranjang Belanja Kosong", "error");
-            const payment = document.getElementById('pos-payment').value;
-            const customer = document.getElementById('pos-customer').value;
+            if (!cart.length) return showNotif("Keranjang Belanja Kosong", "error");
+            const payment = document.getElementById('pos-payment').value, customer = document.getElementById('pos-customer').value;
             if (payment === 'Hutang' && !customer) return showNotif("Nama Pelanggan Wajib", "error");
-            const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            transactions.push({ 
-                id: 'TRX-' + Date.now(), 
-                date: document.getElementById('pos-date').value, 
-                customer: customer || 'Umum', 
-                total, 
-                paymentMethod: payment, 
-                status: 'Pending', 
-                items: JSON.parse(JSON.stringify(cart)) 
-            });
-            saveState(); cart = []; renderCart(); document.getElementById('pos-customer').value = ''; showNotif("BERHASIL DISIMPAN LOKAL");
+            transactions.push({ id: 'TRX-' + Date.now(), date: document.getElementById('pos-date').value, customer: customer || 'Umum', total: cart.reduce((acc, item) => acc + (item.price * item.qty), 0), paymentMethod: payment, status: 'Pending', items: JSON.parse(JSON.stringify(cart)) });
+            saveState(); cart = []; renderCart(); document.getElementById('pos-customer').value = ''; showNotif("BERHASIL DISIMPEN LOKAL");
         }
 
-        // --- DASHBOARD CHARTS ---
-        function initCharts() {
-            updateDashboardStats();
-            const ctxS = document.getElementById('salesChart').getContext('2d');
-            const ctxP = document.getElementById('paymentChart').getContext('2d');
-            if (salesChart) salesChart.destroy(); if (paymentChart) paymentChart.destroy();
-            const labels = Array.from({length: 7}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); return d.toLocaleDateString('id-ID', {weekday: 'short'}); });
-            const salesData = Array.from({length: 7}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); const s = d.toISOString().split('T')[0]; return transactions.filter(t => t.date === s).reduce((a, b) => a + b.total, 0); });
-            salesChart = new Chart(ctxS, { type: 'line', data: { labels, datasets: [{ label: 'Omset', data: salesData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.05)', fill: true, tension: 0.4, borderWidth: 5 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } } } });
-            const payCount = { "Tunai": 0, "Non-Tunai": 0, "Hutang": 0 };
-            transactions.forEach(t => { if (payCount.hasOwnProperty(t.paymentMethod)) payCount[t.paymentMethod]++; else payCount["Non-Tunai"]++; });
-            paymentChart = new Chart(ctxP, { type: 'doughnut', data: { labels: Object.keys(payCount), datasets: [{ data: Object.values(payCount), backgroundColor: ['#2563eb', '#10b981', '#ef4444'], borderWidth: 10, borderColor: '#0f172a' }] }, options: { cutout: '80%', plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: 'bold' } } } } } });
-        }
-
-        function updateDashboardStats() {
-            const today = new Date().toISOString().split('T')[0];
-            const todayTrx = transactions.filter(t => t.date === today);
-            const todayExp = expenses.filter(e => e.date === today);
-            const revenue = todayTrx.reduce((acc, t) => acc + t.total, 0);
-            const expense = todayExp.reduce((acc, e) => acc + e.amount, 0);
-            const unsynced = transactions.filter(t => t.status === 'Pending').length + expenses.filter(e => e.status === 'Pending').length;
-            document.getElementById('stat-today-revenue').innerText = formatRupiah(revenue);
-            document.getElementById('stat-today-expense').innerText = formatRupiah(expense);
-            document.getElementById('stat-today-profit').innerText = formatRupiah(revenue - expense);
-            document.getElementById('stat-unsynced').innerText = unsynced;
-        }
-
-        // --- RENDER TABLES ---
         function renderProductTable() {
-            document.getElementById('product-table').innerHTML = products.map(p => `<tr class="hover:bg-slate-900 transition">
+            document.getElementById('product-table').innerHTML = products.map(p => `<tr class="hover:bg-slate-900 transition text-slate-300">
                 <td class="px-10 py-6 font-black text-white text-base leading-tight uppercase tracking-tight">${p.name}</td>
                 <td class="px-10 py-6 text-[10px] font-black uppercase text-slate-500 tracking-widest">${p.category || '-'}</td>
-                <td class="px-10 py-6 text-right font-bold text-slate-300 text-xs">${p.hasVariants ? 'Varian Aktif' : 'Harga Dasar 0'}</td>
+                <td class="px-10 py-6 text-right font-bold text-slate-300 text-xs">${p.hasVariants ? 'Varian Aktif' : 'Pangaos 0'}</td>
                 <td class="px-10 py-6 text-center space-x-6">
                     <button onclick="openProductModal('${p.id}')" class="text-blue-400 hover:scale-110 font-black text-[10px] uppercase transition">Edit</button>
                     <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:scale-110 font-black text-[10px] uppercase transition">Hapus</button>
@@ -746,7 +690,7 @@
         }
 
         function renderExpenseTable() {
-            document.getElementById('expense-table').innerHTML = expenses.map(e => `<tr class="hover:bg-slate-900 transition">
+            document.getElementById('expense-table').innerHTML = expenses.map(e => `<tr class="hover:bg-slate-900 transition text-slate-300">
                 <td class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">${e.date}</td>
                 <td class="px-8 py-5 font-extrabold text-slate-100 text-xs">${e.category}</td>
                 <td class="px-8 py-5 text-right font-black text-red-400 tracking-tighter">${formatRupiah(e.amount)}</td>
@@ -755,12 +699,12 @@
         }
 
         function renderReportTable() {
-            document.getElementById('report-table').innerHTML = transactions.map(t => `<tr class="hover:bg-slate-900 transition">
+            document.getElementById('report-table').innerHTML = transactions.map(t => `<tr class="hover:bg-slate-900 transition text-slate-300">
                 <td class="px-10 py-6 text-[10px] font-black text-slate-500 tracking-widest uppercase">${t.date}</td>
                 <td class="px-10 py-6 font-extrabold text-white text-xs uppercase leading-tight">${t.customer}</td>
                 <td class="px-10 py-6 font-black text-blue-600 dark:text-blue-400 text-right text-lg tracking-tighter">${formatRupiah(t.total)}</td>
                 <td class="px-10 py-6 text-center"><span class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-full text-[9px] font-black uppercase tracking-widest border border-slate-700">${t.paymentMethod}</span></td>
-                <td class="px-10 py-6 text-center"><button onclick="deleteTransaction('${t.id}')" class="p-3 text-slate-500 hover:text-red-500 bg-slate-950 rounded-2xl transition"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>`).reverse().join('');
+                <td class="px-10 py-6 text-center"><button onclick="deleteTransaction('${t.id}')" class="p-3 text-slate-500 hover:text-red-500 bg-slate-950 rounded-2xl transition shadow-sm"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>`).reverse().join('');
             lucide.createIcons();
         }
 
@@ -774,14 +718,10 @@
             lucide.createIcons();
         }
 
-        // --- UTILS & HELPERS ---
         function formatRupiah(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n); }
         function saveState() { localStorage.setItem('owner_products', JSON.stringify(products)); localStorage.setItem('owner_transactions', JSON.stringify(transactions)); localStorage.setItem('owner_expenses', JSON.stringify(expenses)); }
         function showNotif(m, t = "success") { const n = document.getElementById('notif'); document.getElementById('notif-msg').innerText = m; n.style.opacity = "1"; n.style.transform = "translateY(0) translateX(-50%)"; setTimeout(() => { n.style.opacity = "0"; n.style.transform = "translateY(40px) translateX(-50%)"; }, 3000); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleDarkMode() { }
-        function toggleVariantInputs() { const v = document.getElementById('prod-has-variants').checked; document.getElementById('single-price-area').classList.toggle('hidden', v); document.getElementById('variant-price-area').classList.toggle('hidden', !v); }
-        function toggleCustomerInput() { const p = document.getElementById('pos-payment').value; document.getElementById('customer-input-area').classList.toggle('hidden', p !== 'Hutang'); }
         function checkConnection() { const t = document.getElementById('status-text'); if (navigator.onLine) t.innerText = "Terhubung"; else t.innerText = "Offline"; }
         function updateLastSyncUI() { document.getElementById('last-sync').innerText = "Database: Siap"; }
         function deleteProduct(id) { if(confirm("Hapus item?")) { products = products.filter(p => p.id !== id); saveState(); renderProductTable(); } }
@@ -789,6 +729,8 @@
         function deleteTransaction(id) { if(confirm("Hapus riwayat?")) { transactions = transactions.filter(t => t.id !== id); saveState(); renderReportTable(); } }
         function settleDebt(id) { if(confirm("Lunasi hutang?")) { const trx = transactions.find(t => t.id === id); if(trx) { trx.paymentMethod = 'Tunai'; trx.status = 'Pending'; saveState(); renderPiutangGrid(); showNotif("HUTANG LUNAS"); } } }
         function applyFilters() { renderReportTable(); showNotif("Filter Diterapkan"); }
+        function toggleVariantInputs() { const v = document.getElementById('prod-has-variants').checked; document.getElementById('single-price-area').classList.toggle('hidden', v); document.getElementById('variant-price-area').classList.toggle('hidden', !v); }
+        function toggleCustomerInput() { const p = document.getElementById('pos-payment').value; document.getElementById('customer-input-area').classList.toggle('hidden', p !== 'Hutang'); }
         function openProductModal(id = null) {
             const f = document.getElementById('product-form'); f.reset(); document.getElementById('prod-id').value = ''; document.getElementById('prod-has-variants').checked = false; toggleVariantInputs();
             if (id) {
@@ -799,12 +741,22 @@
             }
             document.getElementById('modal-product').classList.remove('hidden');
         }
+        function initCharts() {
+            updateDashboardStats();
+            const ctxS = document.getElementById('salesChart').getContext('2d'), ctxP = document.getElementById('paymentChart').getContext('2d');
+            if (salesChart) salesChart.destroy(); if (paymentChart) paymentChart.destroy();
+            const labels = Array.from({length: 7}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); return d.toLocaleDateString('id-ID', {weekday: 'short'}); });
+            const salesData = Array.from({length: 7}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6 - i)); const s = d.toISOString().split('T')[0]; return transactions.filter(t => t.date === s).reduce((acc, t) => acc + t.total, 0); });
+            salesChart = new Chart(ctxS, { type: 'line', data: { labels, datasets: [{ label: 'Omset', data: salesData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.05)', fill: true, tension: 0.4, borderWidth: 5 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }, x: { ticks: { color: '#94a3b8' }, grid: { display: false } } } } });
+            const payCount = { "Tunai": 0, "Non-Tunai": 0, "Hutang": 0 };
+            transactions.forEach(t => { if (payCount.hasOwnProperty(t.paymentMethod)) payCount[t.paymentMethod]++; else payCount["Non-Tunai"]++; });
+            paymentChart = new Chart(ctxP, { type: 'doughnut', data: { labels: Object.keys(payCount), datasets: [{ data: Object.values(payCount), backgroundColor: ['#2563eb', '#10b981', '#ef4444'], borderWidth: 10, borderColor: '#0f172a' }] }, options: { cutout: '80%', plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { weight: 'bold' } } } } } });
+        }
         function exportToCSV() {
-            if (transactions.length === 0) return showNotif("Teu aya data");
-            const headers = ["Kaping", "Palanggan", "Total", "Metode"];
-            const rows = transactions.map(t => [t.date, t.customer, t.total, t.paymentMethod]);
-            let csv = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(r => r.join(",")).join("\n");
-            const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `laporan_warkop_jp_${Date.now()}.csv`; link.click();
+            if (!transactions.length) return showNotif("Teu aya data");
+            const h = ["Waktu", "Palanggan", "Total", "Metode"], r = transactions.map(t => [t.date, t.customer, t.total, t.paymentMethod]);
+            let csv = "data:text/csv;charset=utf-8," + h.join(",") + "\n" + r.map(row => row.join(",")).join("\n");
+            const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `warkop_jp_${Date.now()}.csv`; link.click();
         }
     </script>
 </body>
